@@ -1,81 +1,51 @@
-Multi-Scale Temporal Modeling for MS Disease Progression
+# Multiple Sclerosis Lesion Segmentation and Progression Modelling
 
-This project presents a multi-scale deep learning framework to model lesion dynamics and predict disease progression in Multiple Sclerosis (MS) using longitudinal MRI data. The approach captures temporal patterns at voxel, lesion, and patient levels, enabling more accurate and clinically meaningful predictions.
+This repository contains a Google Colab notebook exploring MRI preprocessing, lesion segmentation, temporal modelling, and patient-level progression analysis for Multiple Sclerosis (MS).
 
-🔍 Problem Statement
-Traditional MS lesion analysis methods focus on lesion volume or count at individual timepoints and fail to capture temporal evolution across multiple scales. This limits early prediction of disease progression and treatment response.
+> **Research prototype only:** this notebook is not a clinically validated diagnostic or treatment tool. Do not use its outputs to make patient-care decisions.
 
-🎯 Objectives
-Model temporal lesion dynamics across multiple scales
-Detect early voxel-level changes before visible lesion formation
-Track lesion growth, shrinkage, and interactions over time
-Predict patient-level disease progression (EDSS trend)
+## Repository contents
 
-🧠 Methodology Overview
-1. Data Acquisition
-Longitudinal multi-modal MRI scans: T1, T2, FLAIR
-Clinical data including EDSS scores
+- `MS_Lesion_Segmetation.ipynb` — end-to-end experimental notebook.
+- The notebook currently contains MRI preprocessing, a U-Net-style segmentation experiment, evaluation utilities, temporal modelling experiments, graph-based modelling, and feature-fusion experiments.
 
-3. Preprocessing
-Skull stripping
-Bias field correction
-Registration across timepoints
-Intensity normalization
+## Runtime and dependencies
 
-3. Lesion Segmentation
-3D U-Net used to segment MS lesions from MRI volumes
-Generates temporal lesion masks for each patient
+The notebook was authored for Google Colab and expects the dataset to be mounted from Google Drive. It currently contains paths under:
 
-4. Multi-Scale Temporal Modeling
-Voxel-Level: CNN + LSTM
-Captures fine-grained voxel intensity changes over time
-Lesion-Level: Attention-based model
-Learns lesion evolution patterns (growth, merging, regression)
-Patient-Level: Gradient Descent–based sequence model
-Integrates lesion features and clinical data
+```text
+/content/drive/MyDrive/MS_Project/
+```
 
-5. Fusion & Prediction
-Multi-scale features are fused into a unified representation
+Update those paths to match your own dataset layout before running the relevant cells. The raw MRI dataset is not included in this repository.
 
-Predicts:
-Future lesion activity
-Disease progression trends (EDSS)
+The experiments use a mixture of TensorFlow/Keras and PyTorch, along with NumPy, pandas, nibabel, SciPy, scikit-learn, Matplotlib, and Seaborn. The graph experiment additionally uses PyTorch Geometric.
 
-🧪 Evaluation Metrics
-Dice Coefficient (lesion segmentation accuracy)
-Precision & Recall
-EDSS correlation
-MAE / RMSE for progression prediction
+A starting environment can be installed with:
 
-🛠️ Tech Stack
-Python
-PyTorch
-MONAI
-NumPy, SciPy
-Medical imaging formats: NIfTI
+```bash
+python -m pip install -r requirements.txt
+```
 
-📁 Project Structure (example)
-├── data/
-│   ├── raw/
-│   └── processed/
-├── preprocessing/
-├── segmentation/
-│   └── unet_3d.py
-├── models/
-│   ├── voxel_cnn_lstm.py
-│   ├── lesion_attention.py
-│   └── patient_gd_model.py
-├── evaluation/
-├── results/
-├── README.md
+Install a PyTorch build that matches your runtime (CPU/CUDA) before installing PyTorch Geometric. See the official installation guidance for the matching wheel instructions: https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html
 
-🚀 Key Contributions
-Unified multi-scale temporal framework for MS analysis
-Early detection using voxel-level temporal modeling
-Attention-driven lesion evolution tracking
-Patient-level progression prediction using deep learning
+## Suggested execution order
 
-📌 Future Work
-Incorporate transformer-based temporal models
-Extend framework to other neurodegenerative diseases
-Improve interpretability with attention visualization
+1. Open the notebook in Google Colab or a compatible GPU-enabled environment.
+2. Mount Google Drive and update the dataset paths in the preprocessing cells.
+3. Run preprocessing and patient-level data splitting.
+4. Run the segmentation model cells and inspect the segmentation metrics.
+5. Run the temporal/graph experiments only after the expected intermediate arrays have been created.
+6. Review the evaluation cells and verify that test data is held out by patient, not by slice.
+
+## Reproducibility and interpretation
+
+- Record the dataset version, patient split, random seed, and runtime/library versions for every experiment.
+- Keep all slices and timepoints from a patient in the same data split to reduce leakage.
+- Report segmentation metrics (such as Dice, precision, and recall) separately from progression-regression metrics (such as MAE, RMSE, and correlation).
+- Do not describe estimated or illustrative metrics as measured results. Re-run evaluation on a genuinely held-out cohort before reporting performance.
+- MRI preprocessing and model outputs require domain-expert review.
+
+## Scope
+
+The notebook is exploratory and contains multiple experimental model approaches. It is not yet packaged as a reusable training/inference library or a production clinical application.
